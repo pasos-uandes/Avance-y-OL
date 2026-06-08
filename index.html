@@ -1,426 +1,604 @@
-
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans)}
-.header{padding:1.5rem 0 1rem;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1.5rem}
-.header h1{font-size:20px;font-weight:500;color:var(--color-text-primary)}
-.header p{font-size:13px;color:var(--color-text-secondary);margin-top:4px}
-.section-title{font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:1rem}
-.filter-section{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1.5rem;border:0.5px solid var(--color-border-tertiary)}
-.filter-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem}
-.filter-header label{font-size:13px;color:var(--color-text-secondary)}
-.filter-controls{display:flex;gap:8px}
-.btn-small{font-size:12px;padding:4px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer}
-.btn-small:hover{background:var(--color-background-secondary)}
-.search-box{width:100%;padding:8px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);font-size:13px;margin-bottom:10px}
-.checkbox-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:4px;max-height:160px;overflow-y:auto;padding-right:4px}
-.checkbox-item{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:var(--border-radius-md);cursor:pointer;font-size:13px;color:var(--color-text-primary)}
-.checkbox-item:hover{background:var(--color-background-primary)}
-.checkbox-item input{accent-color:#185FA5;cursor:pointer}
-.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:1.5rem}
-.metric-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem}
-.metric-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:6px}
-.metric-value{font-size:26px;font-weight:500;color:var(--color-text-primary)}
-.metric-sub{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
-.chart-section{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:1.5rem}
-.progress-bar-container{margin:8px 0}
-.progress-bar-label{display:flex;justify-content:space-between;font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
-.progress-bar-track{height:12px;background:var(--color-background-secondary);border-radius:6px;overflow:hidden}
-.progress-bar-fill{height:100%;border-radius:6px;transition:width 0.6s ease}
-.table-section{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:1.5rem;overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;padding:8px 12px;font-size:12px;font-weight:500;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary)}
-td{padding:8px 12px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary)}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:var(--color-background-secondary)}
-.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500}
-.badge-blue{background:#E6F1FB;color:#185FA5}
-.badge-green{background:#EAF3DE;color:#3B6D11}
-.badge-amber{background:#FAEEDA;color:#854F0B}
-.badge-gray{background:#F1EFE8;color:#5F5E5A}
-.nivel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:1.5rem}
-.nivel-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem}
-.nivel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.nivel-title{font-size:14px;font-weight:500;color:var(--color-text-primary)}
-.nivel-count{font-size:11px;color:var(--color-text-tertiary)}
-.mini-progress{height:8px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden;margin:4px 0}
-.mini-fill{height:100%;border-radius:4px}
-.nivel-stats{display:flex;gap:12px;margin-top:8px}
-.nivel-stat{flex:1;font-size:11px;color:var(--color-text-secondary)}
-.nivel-stat strong{display:block;font-size:15px;font-weight:500;color:var(--color-text-primary)}
-.loading{text-align:center;padding:2rem;color:var(--color-text-secondary);font-size:14px}
-.error{text-align:center;padding:2rem;color:var(--color-text-danger);font-size:13px}
-.refresh-btn{font-size:12px;padding:5px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
-.refresh-btn:hover{background:var(--color-background-secondary)}
-.status-dot{width:7px;height:7px;border-radius:50%;background:#1D9E75;display:inline-block;margin-right:6px}
-.empty{text-align:center;padding:2rem;color:var(--color-text-tertiary);font-size:13px}
-</style>
-
-<h2 class="sr-only">Dashboard de avance y logros por colegio</h2>
-
-<div class="header">
-  <div style="display:flex;justify-content:space-between;align-items:flex-start">
-    <div>
-      <h1>Indicadores de Logro 2026</h1>
-      <p><span class="status-dot" id="statusDot"></span><span id="statusText">Cargando datos...</span></p>
-    </div>
-    <button class="refresh-btn" onclick="loadData()"><i class="ti ti-refresh" aria-hidden="true"></i> Actualizar</button>
-  </div>
-</div>
-
-<div id="mainContent">
-  <div class="loading" id="loadingMsg"><i class="ti ti-loader" aria-hidden="true"></i> Cargando datos desde Google Sheets...</div>
-</div>
-
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Avance y OL — PASOS UANDES</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --salmon: #D8162D; --salmon-dark: #D8162D; --salmon-light: #fdeaea; --salmon-mid: #ED6B6A;
+    --green: #93C049; --amber: #F28E35; --purple: #25AFC4; --blue: #79C3A1;
+    --bg: #ffffff; --bg2: #f7f7f5; --bg3: #f0efec;
+    --text: #1a1a1a; --text2: #666; --text3: #999;
+    --border: rgba(0,0,0,0.1); --border2: rgba(0,0,0,0.2);
+    --radius: 8px; --radius-lg: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a; --bg2: #242424; --bg3: #2e2e2e;
+      --text: #f0f0f0; --text2: #aaa; --text3: #666;
+      --border: rgba(255,255,255,0.1); --border2: rgba(255,255,255,0.2);
+      --salmon-light: #3a1a16;
+    }
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; background: var(--bg3); color: var(--text); min-height: 100vh; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 20px; }
+
+  /* TOP BAR */
+  .top-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+  .top-bar h1 { font-size: 20px; font-weight: 600; color: #25AFC4; display: flex; align-items: center; gap: 8px; }
+  .top-bar h1 svg { width: 22px; height: 22px; }
+  .update-time { font-size: 12px; color: var(--text3); }
+
+  /* FILTERS */
+  .filters { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin-bottom: 20px; }
+  .fgroup { display: flex; flex-direction: column; gap: 4px; }
+  .fgroup label { font-size: 11px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; }
+  .fgroup input[type=text] { font-size: 13px; padding: 6px 10px; border-radius: var(--radius); border: 0.5px solid var(--border2); background: var(--bg2); color: var(--text); min-width: 200px; font-family: inherit; }
+  .fgroup input[type=text]:focus { outline: 2px solid #25AFC4; outline-offset: 1px; }
+
+  /* Multi-select */
+  .multi-select-box { display:flex; align-items:center; gap:6px; font-size:13px; padding:6px 10px; border-radius:var(--radius); border:0.5px solid var(--border2); background:var(--bg2); color:var(--text); min-width:220px; cursor:pointer; user-select:none; }
+  .multi-select-menu { position:absolute; top:calc(100% + 4px); left:0; z-index:999; background:var(--bg); border:0.5px solid var(--border2); border-radius:var(--radius-lg); box-shadow:0 4px 16px rgba(0,0,0,0.12); min-width:260px; max-height:300px; overflow-y:auto; padding:6px 0; }
+  .ms-item { display:flex; align-items:center; gap:8px; padding:6px 14px; font-size:13px; color:var(--text); cursor:pointer; }
+  .ms-item:hover { background:var(--bg2); }
+  .ms-item input[type=checkbox] { cursor:pointer; accent-color:var(--salmon); }
+
+  .btn { font-size: 12px; padding: 6px 14px; border-radius: var(--radius); border: 0.5px solid var(--border2); background: var(--bg2); color: var(--text2); cursor: pointer; font-family: inherit; transition: background 0.15s; align-self: flex-end; }
+  .btn:hover { background: var(--bg3); color: var(--text); }
+  .btn.primary { background: #fdeaea; color: var(--salmon-dark); border-color: var(--salmon-mid); }
+  .btn.primary:hover { background: #93C049; color: #fff; }
+
+  /* SECTION TITLES */
+  .section-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; margin-top: 4px; }
+
+  /* KPI CARDS */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .kpi { background: var(--bg2); border-radius: var(--radius); padding: 14px 16px; }
+  .kpi.accent { background: #fdeaea; }
+  .kpi .lbl { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
+  .kpi .val { font-size: 26px; font-weight: 600; line-height: 1; }
+  .kpi .sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+  /* PROGRESS */
+  .prog-bar { height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+  .prog-fill { height: 6px; border-radius: 3px; transition: width 0.6s ease; }
+  .prog-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--text3); margin-top: 4px; }
+
+  /* CARDS */
+  .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px 18px; }
+  .card h3 { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 10px; }
+
+  /* CHARTS ROW */
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  @media (max-width: 640px) { .charts-row { grid-template-columns: 1fr; } }
+
+  /* NIVEL CARDS GRID */
+  .nivel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .nivel-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; }
+  .nivel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .nivel-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .nivel-count { font-size: 11px; color: var(--text3); }
+  .nivel-stat { display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); margin-top: 6px; }
+  .nivel-stat strong { color: var(--text); }
+
+  /* TABLE */
+  table.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.04em; padding: 6px 10px; border-bottom: 0.5px solid var(--border); text-align: left; white-space: nowrap; }
+  .data-table th:not(:first-child) { text-align: center; }
+  .data-table td { padding: 8px 10px; border-bottom: 0.5px solid var(--border); color: var(--text); }
+  .data-table td:not(:first-child) { text-align: center; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: var(--bg2); }
+
+  /* PILLS */
+  .pill { display: inline-block; font-size: 11px; padding: 2px 9px; border-radius: 20px; font-weight: 500; }
+  .pill-g { background: #e8f5d6; color: #4a7a10; }
+  .pill-a { background: #fff0d6; color: #8a4a00; }
+  .pill-r { background: #fde8e8; color: #a01020; }
+  .pill-b { background: #e0f5fb; color: #0d6e85; }
+  @media (prefers-color-scheme: dark) {
+    .pill-g { background: #2a3d1a; color: #a8d860; }
+    .pill-a { background: #3a2a00; color: #f9b875; }
+    .pill-r { background: #3a1010; color: #ED6B6A; }
+    .pill-b { background: #0f2a33; color: #5dd9f0; }
+  }
+
+  /* LOADING */
+  .loading-wrap { text-align: center; padding: 60px 20px; color: var(--text2); }
+  .loading-wrap p { font-size: 15px; margin-bottom: 16px; }
+  .spinner { display: inline-flex; gap: 6px; }
+  .spinner span { width: 9px; height: 9px; border-radius: 50%; background: var(--border2); animation: pulse 1.2s infinite; }
+  .spinner span:nth-child(2) { animation-delay: 0.2s; }
+  .spinner span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse { 0%,80%,100%{opacity:.25} 40%{opacity:1} }
+
+  .error-wrap { background: #fde8e8; border: 1px solid #f5a0a0; border-radius: var(--radius-lg); padding: 20px; color: #921a1a; margin-bottom: 20px; font-size: 13px; line-height: 1.6; }
+  .error-wrap strong { display: block; font-size: 15px; margin-bottom: 8px; }
+
+  .divider { height: 0.5px; background: var(--border); margin: 24px 0; }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 11px; color: var(--text2); margin-bottom: 10px; }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .legend .sq { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top-bar">
+    <h1>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <path d="M8 17V11M12 17V7M16 17V13"/>
+      </svg>
+      Avance y OL — PASOS UANDES
+    </h1>
+    <span class="update-time" id="updateTime">—</span>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="filters">
+    <div class="fgroup" style="position:relative">
+      <label>Colegio</label>
+      <div id="colegioDropdown" class="multi-select-box" onclick="toggleColegioMenu(event)">
+        <span id="colegioLabel">Todos los colegios</span>
+        <span style="margin-left:auto;opacity:.5;font-size:11px">▼</span>
+      </div>
+      <div id="colegioMenu" class="multi-select-menu" style="display:none">
+        <label class="ms-item"><input type="checkbox" id="ms-all" onchange="toggleAll(this)"> <em>Todos los colegios</em></label>
+        <div id="ms-list"></div>
+        <div style="padding:8px 14px;border-top:0.5px solid var(--border);margin-top:4px">
+          <button onclick="applyColegioFilter()" style="width:100%;padding:7px;border-radius:var(--radius);border:none;background:#25AFC4;color:#fff;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit">Aplicar filtro</button>
+        </div>
+      </div>
+    </div>
+    <div class="fgroup">
+      <label>Nivel</label>
+      <select id="fNivel" onchange="render()" style="font-size:13px;padding:6px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);min-width:150px;cursor:pointer;font-family:inherit">
+        <option value="">Todos los niveles</option>
+      </select>
+    </div>
+    <div class="fgroup">
+      <label>Unidad</label>
+      <select id="fUnidad" onchange="render()" style="font-size:13px;padding:6px 10px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);min-width:120px;cursor:pointer;font-family:inherit">
+        <option value="">Todas</option>
+      </select>
+    </div>
+    <button class="btn" onclick="resetFilters()">↺ Limpiar filtros</button>
+    <button class="btn primary" onclick="loadData()">⟳ Actualizar datos</button>
+  </div>
+
+  <div id="mainContent">
+    <div class="loading-wrap">
+      <p>Conectando con Google Sheets...</p>
+      <div class="spinner"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+
+</div>
+
 <script>
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSc5nR49R8M2WycRNGUIjDN1MP1tRLM_bwCR-I8YmEeMR__FzdM3JpGE0xxrTjxwVvWyu5vL_wfG5VL/pub?gid=1361662823&single=true&output=csv';
 const MAX_SESIONES = 30;
 
 let allData = [];
-let colegios = [];
-let selectedColegios = new Set();
 let charts = {};
 
-const NIVEL_ORDER = ['Medio Menor','Medio Mayor','Pre Kínder','Kínder','1° Básico','2° Básico','3° Básico','4° Básico','5° Básico','6° Básico','7° Básico','8° Básico','1° Medio','2° Medio','3° Medio','4° Medio'];
+const NIVEL_ORDER = [
+  'Medio Menor','Medio Mayor','Pre Kínder','Pre Kinder','Kínder','Kinder',
+  '1° Básico','2° Básico','3° Básico','4° Básico','5° Básico','6° Básico',
+  '7° Básico','8° Básico','1° Medio','2° Medio','3° Medio','4° Medio'
+];
 
 function nivelSort(a,b){
-  const ia = NIVEL_ORDER.findIndex(n=>n.toLowerCase()===a.toLowerCase());
-  const ib = NIVEL_ORDER.findIndex(n=>n.toLowerCase()===b.toLowerCase());
-  if(ia===-1&&ib===-1)return a.localeCompare(b);
-  if(ia===-1)return 1;
-  if(ib===-1)return -1;
+  const norm = s => s.replace(/í/g,'i').replace(/á/g,'a').replace(/é/g,'e').replace(/ó/g,'o').replace(/ú/g,'u').replace(/°/g,'').trim().toLowerCase();
+  const ia = NIVEL_ORDER.findIndex(n=>norm(n)===norm(a));
+  const ib = NIVEL_ORDER.findIndex(n=>norm(n)===norm(b));
+  if(ia===-1&&ib===-1)return a.localeCompare(b,'es');
+  if(ia===-1)return 1; if(ib===-1)return -1;
   return ia-ib;
 }
 
-async function loadData(){
-  document.getElementById('statusText').textContent='Actualizando...';
-  document.getElementById('loadingMsg') && (document.getElementById('loadingMsg').style.display='block');
-  try{
-    const resp = await fetch(SHEET_URL);
-    if(!resp.ok)throw new Error('No se pudo acceder al sheet');
-    const text = await resp.text();
-    allData = parseCSV(text);
-    colegios = [...new Set(allData.map(r=>r.colegio).filter(Boolean))].sort();
-    if(selectedColegios.size===0) colegios.forEach(c=>selectedColegios.add(c));
-    document.getElementById('statusText').textContent=`${allData.length} registros · Actualizado ${new Date().toLocaleTimeString('es-CL')}`;
-    document.getElementById('statusDot').style.background='#1D9E75';
-    render();
-  }catch(e){
-    document.getElementById('statusText').textContent='Error al cargar datos';
-    document.getElementById('statusDot').style.background='#E24B4A';
-    document.getElementById('mainContent').innerHTML=`<div class="error"><i class="ti ti-alert-circle"></i> No se pudieron cargar los datos.<br><small>${e.message}</small></div>`;
-  }
-}
-
 function parseCSV(text){
-  const lines = text.split('\n').filter(l=>l.trim());
+  const lines = text.trim().split('\n').filter(l=>l.trim());
   if(lines.length<2)return[];
-  const headers = parseCSVRow(lines[0]).map(h=>h.trim().toLowerCase());
+  const headers = parseRow(lines[0]).map(h=>h.trim().toLowerCase().replace(/\s+/g,' '));
   const rows=[];
   for(let i=1;i<lines.length;i++){
-    const vals=parseCSVRow(lines[i]);
+    const vals=parseRow(lines[i]);
     const obj={};
-    headers.forEach((h,j)=>{obj[h]=vals[j]?.trim()||''});
-    const colegio=obj['colegio']||obj['nombre colegio']||obj['establecimiento']||'';
-    const nivel=obj['nivel']||obj['curso']||'';
-    const unidad=obj['unidad']||'';
-    const sesiones=parseFloat(obj['sesiones realizadas']||obj['sesiones']||0)||0;
-    const logro=parseFloat((obj['%logro']||obj['% logro']||obj['logro']||'').replace('%','').replace(',','.'))||null;
-    if(colegio)rows.push({colegio,nivel,unidad,sesiones,logro,raw:obj});
+    headers.forEach((h,j)=>{obj[h]=(vals[j]||'').trim();});
+    // Find columns flexibly
+    const colegio = obj['colegio']||obj['nombre colegio']||obj['establecimiento']||'';
+    const nivel   = obj['nivel']||obj['curso']||'';
+    const unidad  = obj['unidad']||'';
+    const sesiones= parseFloat((obj['sesiones realizadas']||obj['sesiones']||'0').replace(',','.'))||0;
+    const logro   = parseFloat((obj['%logro']||obj['% logro']||obj['%_logro']||obj['logro']||'').replace('%','').replace(',','.'))||null;
+    if(colegio) rows.push({colegio:colegio.trim(), nivel:nivel.trim(), unidad:unidad.trim(), sesiones, logro});
   }
   return rows;
 }
 
-function parseCSVRow(row){
+function parseRow(row){
   const result=[];let cur='';let inQ=false;
   for(let i=0;i<row.length;i++){
     const c=row[i];
-    if(c==='"'){inQ=!inQ}
-    else if(c===','&&!inQ){result.push(cur);cur=''}
-    else{cur+=c}
+    if(c==='"'){inQ=!inQ;}
+    else if(c===','&&!inQ){result.push(cur.replace(/^"|"$/g,''));cur='';}
+    else cur+=c;
   }
-  result.push(cur);
+  result.push(cur.replace(/^"|"$/g,''));
   return result;
 }
 
 function avg(arr){
-  const valid=arr.filter(v=>v!==null&&!isNaN(v));
-  if(!valid.length)return null;
-  return valid.reduce((a,b)=>a+b,0)/valid.length;
+  const v=arr.filter(x=>x!==null&&x!==undefined&&!isNaN(x));
+  if(!v.length)return null;
+  return v.reduce((a,b)=>a+b,0)/v.length;
 }
 
-function pct(v,max){return Math.min(100,Math.round((v/max)*100))}
+function pct(v,max){return Math.min(100,Math.round((v/max)*100));}
 
-function colorForPct(p){
-  if(p>=75)return'#1D9E75';
-  if(p>=50)return'#378ADD';
-  if(p>=25)return'#BA7517';
-  return'#E24B4A';
+function progColor(p){
+  if(p>=75)return'#93C049';
+  if(p>=50)return'#25AFC4';
+  if(p>=25)return'#F28E35';
+  return'#D8162D';
+}
+
+function pillForPct(p){
+  if(p===null)return'<span style="color:var(--text3)">—</span>';
+  const cls = p>=75?'pill-g':p>=50?'pill-b':p>=25?'pill-a':'pill-r';
+  return`<span class="pill ${cls}">${p.toFixed(1)}%</span>`;
+}
+
+function normUnidad(u){
+  if(!u)return'';
+  const m=u.match(/\d/);
+  return m?'U'+m[0]:'';
+}
+
+async function loadData(){
+  document.getElementById('updateTime').textContent='Actualizando...';
+  document.getElementById('mainContent').innerHTML=`<div class="loading-wrap"><p>Cargando datos desde Google Sheets...</p><div class="spinner"><span></span><span></span><span></span></div></div>`;
+  destroyAll();
+  try{
+    const res=await fetch(SHEET_URL);
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const text=await res.text();
+    allData=parseCSV(text);
+    if(!allData.length)throw new Error('Sin datos en el sheet');
+    document.getElementById('updateTime').textContent='Actualizado '+new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+    populateFilters();
+    render();
+  }catch(e){
+    document.getElementById('updateTime').textContent='Error al cargar';
+    document.getElementById('mainContent').innerHTML=`<div class="error-wrap"><strong>No se pudieron cargar los datos</strong>Verifica que el Google Sheet esté publicado públicamente.<br><small>${e.message}</small></div>`;
+  }
+}
+
+function populateFilters(){
+  const colegios=[...new Set(allData.map(r=>r.colegio).filter(Boolean))].sort();
+  const list=document.getElementById('ms-list');
+  list.innerHTML='';
+  colegios.forEach(c=>{
+    const lbl=document.createElement('label');
+    lbl.className='ms-item';
+    lbl.innerHTML=`<input type="checkbox" value="${c.replace(/"/g,'&quot;')}" checked onchange="updateColegioLabel();"> ${c}`;
+    list.appendChild(lbl);
+  });
+  document.getElementById('ms-all').checked=true;
+
+  const setOpts=(id,vals)=>{
+    const el=document.getElementById(id);
+    const cur=el.value;
+    while(el.options.length>1)el.remove(1);
+    vals.forEach(v=>{if(!v)return;const o=document.createElement('option');o.value=v;o.textContent=v;el.appendChild(o);});
+    if(vals.includes(cur))el.value=cur;
+  };
+
+  const niveles=[...new Set(allData.map(r=>r.nivel).filter(Boolean))].sort(nivelSort);
+  setOpts('fNivel',niveles);
+
+  const unidades=[...new Set(allData.map(r=>normUnidad(r.unidad)).filter(Boolean))].sort();
+  setOpts('fUnidad',unidades);
+}
+
+function toggleColegioMenu(e){
+  const menu=document.getElementById('colegioMenu');
+  menu.style.display=menu.style.display==='none'?'block':'none';
+  e.stopPropagation();
+}
+function applyColegioFilter(){document.getElementById('colegioMenu').style.display='none';render();}
+document.addEventListener('click',function(e){
+  const dd=document.getElementById('colegioDropdown');
+  const menu=document.getElementById('colegioMenu');
+  if(menu&&dd&&!dd.parentElement.contains(e.target)){if(menu.style.display!=='none'){menu.style.display='none';render();}}
+});
+function toggleAll(cb){document.querySelectorAll('#ms-list input[type=checkbox]').forEach(c=>c.checked=cb.checked);updateColegioLabel();}
+function getSelectedColegios(){
+  const checked=[...document.querySelectorAll('#ms-list input[type=checkbox]:checked')].map(c=>c.value);
+  const all=[...document.querySelectorAll('#ms-list input[type=checkbox]')];
+  return checked.length===all.length?[]:checked;
+}
+function updateColegioLabel(){
+  const checked=[...document.querySelectorAll('#ms-list input[type=checkbox]:checked')];
+  const all=[...document.querySelectorAll('#ms-list input[type=checkbox]')];
+  const allCb=document.getElementById('ms-all');
+  if(checked.length===0){allCb.checked=false;allCb.indeterminate=false;document.getElementById('colegioLabel').textContent='Sin selección';}
+  else if(checked.length===all.length){allCb.checked=true;allCb.indeterminate=false;document.getElementById('colegioLabel').textContent='Todos los colegios';}
+  else{allCb.checked=false;allCb.indeterminate=true;document.getElementById('colegioLabel').textContent=checked.length===1?checked[0].value:checked.length+' colegios';}
+}
+function resetFilters(){
+  document.querySelectorAll('#ms-list input[type=checkbox]').forEach(c=>c.checked=true);
+  document.getElementById('ms-all').checked=true;
+  updateColegioLabel();
+  ['fNivel','fUnidad'].forEach(id=>document.getElementById(id).value='');
+  render();
+}
+
+function getFiltered(){
+  const selC=getSelectedColegios();
+  const nivel=document.getElementById('fNivel').value;
+  const unidad=document.getElementById('fUnidad').value;
+  return allData.filter(r=>
+    (selC.length===0||selC.includes(r.colegio))&&
+    (!nivel||r.nivel===nivel)&&
+    (!unidad||normUnidad(r.unidad)===unidad)
+  );
+}
+
+function destroyAll(){Object.keys(charts).forEach(id=>{try{charts[id].destroy();}catch(e){}delete charts[id];});}
+function mkChart(id,type,data,opts){
+  const el=document.getElementById(id);if(!el)return;
+  if(charts[id]){try{charts[id].destroy();}catch(e){}delete charts[id];}
+  charts[id]=new Chart(el,{type,data,options:opts});
+}
+
+function getUnidadData(rows){
+  const us={u1:[],u2:[],u3:[],u4:[]};
+  rows.forEach(r=>{
+    const u=normUnidad(r.unidad);
+    if(u==='U1')us.u1.push(r.logro);
+    else if(u==='U2')us.u2.push(r.logro);
+    else if(u==='U3')us.u3.push(r.logro);
+    else if(u==='U4')us.u4.push(r.logro);
+  });
+  return{u1:avg(us.u1),u2:avg(us.u2),u3:avg(us.u3),u4:avg(us.u4),
+         n1:us.u1.filter(x=>x!==null).length,n2:us.u2.filter(x=>x!==null).length,
+         n3:us.u3.filter(x=>x!==null).length,n4:us.u4.filter(x=>x!==null).length};
 }
 
 function render(){
-  const filtered = allData.filter(r=>selectedColegios.has(r.colegio));
-  const mainContent = document.getElementById('mainContent');
-  mainContent.innerHTML='';
-
-  mainContent.appendChild(buildFilterSection());
-  if(filtered.length===0){
-    const e=document.createElement('div');e.className='empty';
-    e.innerHTML='<i class="ti ti-filter-off" aria-hidden="true"></i><br>Selecciona al menos un colegio para ver datos';
-    mainContent.appendChild(e);return;
+  destroyAll();
+  const rows=getFiltered();
+  if(!rows.length){
+    document.getElementById('mainContent').innerHTML='<div class="loading-wrap"><p>Sin datos para los filtros seleccionados.</p></div>';
+    return;
   }
-  mainContent.appendChild(buildSummarySection(filtered));
-  mainContent.appendChild(buildNivelesSection(filtered));
-  initCharts(filtered);
-}
 
-function buildFilterSection(){
-  const div=document.createElement('div');
-  div.className='filter-section';
-  div.innerHTML=`
-    <div class="filter-header">
-      <span class="section-title" style="margin:0">Filtro de colegios <span style="font-size:12px;font-weight:400;color:var(--color-text-tertiary)">(${selectedColegios.size} de ${colegios.length} seleccionados)</span></span>
-      <div class="filter-controls">
-        <button class="btn-small" onclick="selectAll()">Todos</button>
-        <button class="btn-small" onclick="selectNone()">Ninguno</button>
-      </div>
-    </div>
-    <input class="search-box" id="colegioSearch" placeholder="Buscar colegio..." oninput="filterColegios(this.value)">
-    <div class="checkbox-grid" id="checkboxGrid"></div>
-  `;
-  setTimeout(()=>renderCheckboxes(''),0);
-  return div;
-}
+  const selC=getSelectedColegios();
+  const colegios=[...new Set(allData.map(r=>r.colegio).filter(Boolean))].sort();
+  const colegiosFiltrados=selC.length===0?colegios:selC.slice().sort();
+  const niveles=[...new Set(rows.map(r=>r.nivel).filter(Boolean))].sort(nivelSort);
 
-function renderCheckboxes(query){
-  const grid=document.getElementById('checkboxGrid');
-  if(!grid)return;
-  const filtered=colegios.filter(c=>c.toLowerCase().includes(query.toLowerCase()));
-  grid.innerHTML=filtered.map(c=>`
-    <label class="checkbox-item">
-      <input type="checkbox" ${selectedColegios.has(c)?'checked':''} onchange="toggleColegio('${c.replace(/'/g,"\\'")}',this.checked)">
-      <span>${c}</span>
-    </label>
-  `).join('');
-}
+  // Global averages
+  const avgSes=avg(rows.map(r=>r.sesiones));
+  const ud=getUnidadData(rows);
+  const sesP=avgSes!==null?pct(avgSes,MAX_SESIONES):0;
 
-function filterColegios(q){renderCheckboxes(q)}
-function toggleColegio(c,v){if(v)selectedColegios.add(c);else selectedColegios.delete(c);render();}
-function selectAll(){colegios.forEach(c=>selectedColegios.add(c));render();}
-function selectNone(){selectedColegios.clear();render();}
-
-function buildSummarySection(filtered){
-  const wrap=document.createElement('div');
-
-  const avgSesiones=avg(filtered.map(r=>r.sesiones));
-  const u1=filtered.filter(r=>r.unidad==='1'||r.unidad==='U1'||r.unidad==='Unidad 1'||r.unidad==='1°');
-  const u2=filtered.filter(r=>r.unidad==='2'||r.unidad==='U2'||r.unidad==='Unidad 2'||r.unidad==='2°');
-  const u3=filtered.filter(r=>r.unidad==='3'||r.unidad==='U3'||r.unidad==='Unidad 3'||r.unidad==='3°');
-  const u4=filtered.filter(r=>r.unidad==='4'||r.unidad==='U4'||r.unidad==='Unidad 4'||r.unidad==='4°');
-
-  const avgU1=avg(u1.map(r=>r.logro));
-  const avgU2=avg(u2.map(r=>r.logro));
-  const avgU3=avg(u3.map(r=>r.logro));
-  const avgU4=avg(u4.map(r=>r.logro));
-
-  const sesP=avgSesiones!==null?pct(avgSesiones,MAX_SESIONES):0;
-
-  wrap.innerHTML=`
-    <p class="section-title">Resumen general — colegios seleccionados</p>
-    <div class="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-label">Sesiones realizadas (promedio)</div>
-        <div class="metric-value">${avgSesiones!==null?avgSesiones.toFixed(1):'—'}</div>
-        <div class="metric-sub">de ${MAX_SESIONES} sesiones totales</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">% logro U1 (promedio)</div>
-        <div class="metric-value">${avgU1!==null?avgU1.toFixed(1)+'%':'—'}</div>
-        <div class="metric-sub">${u1.length} registros</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">% logro U2</div>
-        <div class="metric-value" style="color:var(--color-text-tertiary)">${avgU2!==null?avgU2.toFixed(1)+'%':'Sin datos'}</div>
-        <div class="metric-sub">${u2.length} registros</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">% logro U3</div>
-        <div class="metric-value" style="color:var(--color-text-tertiary)">${avgU3!==null?avgU3.toFixed(1)+'%':'Sin datos'}</div>
-        <div class="metric-sub">${u3.length} registros</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-label">% logro U4</div>
-        <div class="metric-value" style="color:var(--color-text-tertiary)">${avgU4!==null?avgU4.toFixed(1)+'%':'Sin datos'}</div>
-        <div class="metric-sub">${u4.length} registros</div>
-      </div>
-    </div>
-
-    <div class="chart-section">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-        <span style="font-size:14px;font-weight:500;color:var(--color-text-primary)">Avance de sesiones y logros por unidad</span>
-        <div style="display:flex;gap:12px;font-size:11px;color:var(--color-text-secondary)">
-          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#378ADD;margin-right:4px"></span>Sesiones</span>
-          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>% Logro</span>
-        </div>
-      </div>
-
-      <div style="margin-bottom:1rem">
-        <div class="progress-bar-container">
-          <div class="progress-bar-label"><span>Sesiones realizadas</span><span>${avgSesiones!==null?avgSesiones.toFixed(1):0} / ${MAX_SESIONES} (${sesP}%)</span></div>
-          <div class="progress-bar-track"><div class="progress-bar-fill" style="width:${sesP}%;background:${colorForPct(sesP)}"></div></div>
-        </div>
-        ${avgU1!==null?`
-        <div class="progress-bar-container">
-          <div class="progress-bar-label"><span>% Logro Unidad 1</span><span>${avgU1.toFixed(1)}%</span></div>
-          <div class="progress-bar-track"><div class="progress-bar-fill" style="width:${Math.round(avgU1)}%;background:${colorForPct(Math.round(avgU1))}"></div></div>
-        </div>`:''}
-        ${avgU2!==null?`
-        <div class="progress-bar-container">
-          <div class="progress-bar-label"><span>% Logro Unidad 2</span><span>${avgU2.toFixed(1)}%</span></div>
-          <div class="progress-bar-track"><div class="progress-bar-fill" style="width:${Math.round(avgU2)}%;background:${colorForPct(Math.round(avgU2))}"></div></div>
-        </div>`:''}
-        ${avgU3!==null?`
-        <div class="progress-bar-container">
-          <div class="progress-bar-label"><span>% Logro Unidad 3</span><span>${avgU3.toFixed(1)}%</span></div>
-          <div class="progress-bar-track"><div class="progress-bar-fill" style="width:${Math.round(avgU3)}%;background:${colorForPct(Math.round(avgU3))}"></div></div>
-        </div>`:''}
-        ${avgU4!==null?`
-        <div class="progress-bar-container">
-          <div class="progress-bar-label"><span>% Logro Unidad 4</span><span>${avgU4.toFixed(1)}%</span></div>
-          <div class="progress-bar-track"><div class="progress-bar-fill" style="width:${Math.round(avgU4)}%;background:${colorForPct(Math.round(avgU4))}"></div></div>
-        </div>`:''}
-      </div>
-
-      <div style="position:relative;width:100%;height:280px">
-        <canvas id="mainChart" role="img" aria-label="Gráfico de sesiones realizadas versus total, y porcentaje de logro por unidad"></canvas>
-      </div>
-    </div>
-
-    <div class="table-section">
-      <p class="section-title">Detalle por colegio</p>
-      ${buildColegioTable(filtered)}
-    </div>
-  `;
-  return wrap;
-}
-
-function buildColegioTable(filtered){
-  const byC={};
-  filtered.forEach(r=>{
-    if(!byC[r.colegio])byC[r.colegio]={sesiones:[],u1:[],u2:[],u3:[],u4:[]};
-    byC[r.colegio].sesiones.push(r.sesiones);
-    const u=r.unidad.replace(/[^0-9]/g,'');
-    if(u==='1')byC[r.colegio].u1.push(r.logro);
-    if(u==='2')byC[r.colegio].u2.push(r.logro);
-    if(u==='3')byC[r.colegio].u3.push(r.logro);
-    if(u==='4')byC[r.colegio].u4.push(r.logro);
-  });
-  const rows=Object.entries(byC).map(([c,d])=>{
-    const s=avg(d.sesiones);const sp=s!==null?pct(s,MAX_SESIONES):0;
-    const u1=avg(d.u1);const u2=avg(d.u2);const u3=avg(d.u3);const u4=avg(d.u4);
-    return{colegio:c,s,sp,u1,u2,u3,u4};
-  }).sort((a,b)=>a.colegio.localeCompare(b.colegio));
-
-  const fmtPct=(v)=>v!==null?`<span class="badge" style="background:${colorForPct(Math.round(v))}22;color:${colorForPct(Math.round(v))}">${v.toFixed(1)}%</span>`:'<span style="color:var(--color-text-tertiary)">—</span>';
-  return`<table><thead><tr>
-    <th>Colegio</th><th>Sesiones (prom.)</th><th>Avance</th><th>% Logro U1</th><th>% Logro U2</th><th>% Logro U3</th><th>% Logro U4</th>
-  </tr></thead><tbody>${rows.map(r=>`<tr>
-    <td style="font-weight:500">${r.colegio}</td>
-    <td>${r.s!==null?r.s.toFixed(1):'—'} / ${MAX_SESIONES}</td>
-    <td><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:8px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden"><div style="height:100%;width:${r.sp}%;background:${colorForPct(r.sp)};border-radius:4px"></div></div><span style="font-size:12px;color:var(--color-text-secondary);min-width:30px">${r.sp}%</span></div></td>
-    <td>${fmtPct(r.u1)}</td><td>${fmtPct(r.u2)}</td><td>${fmtPct(r.u3)}</td><td>${fmtPct(r.u4)}</td>
-  </tr>`).join('')}</tbody></table>`;
-}
-
-function buildNivelesSection(filtered){
-  const wrap=document.createElement('div');
-  wrap.innerHTML='<p class="section-title">Detalle por nivel</p>';
-
-  const byN={};
-  filtered.forEach(r=>{
-    if(!r.nivel)return;
-    if(!byN[r.nivel])byN[r.nivel]={sesiones:[],u1:[],u2:[],u3:[],u4:[],registros:0};
-    byN[r.nivel].sesiones.push(r.sesiones);
-    byN[r.nivel].registros++;
-    const u=r.unidad.replace(/[^0-9]/g,'');
-    if(u==='1')byN[r.nivel].u1.push(r.logro);
-    if(u==='2')byN[r.nivel].u2.push(r.logro);
-    if(u==='3')byN[r.nivel].u3.push(r.logro);
-    if(u==='4')byN[r.nivel].u4.push(r.logro);
+  // By colegio
+  const byColegio={};
+  colegiosFiltrados.forEach(c=>{
+    const cr=rows.filter(r=>r.colegio===c);
+    if(!cr.length)return;
+    byColegio[c]={ses:avg(cr.map(r=>r.sesiones)),...getUnidadData(cr),n:cr.length};
   });
 
-  const niveles=Object.keys(byN).sort(nivelSort);
-  const grid=document.createElement('div');
-  grid.className='nivel-grid';
-
+  // By nivel
+  const byNivel={};
   niveles.forEach(n=>{
-    const d=byN[n];
-    const s=avg(d.sesiones);const sp=s!==null?pct(s,MAX_SESIONES):0;
-    const u1=avg(d.u1);const u2=avg(d.u2);const u3=avg(d.u3);const u4=avg(d.u4);
-    const card=document.createElement('div');
-    card.className='nivel-card';
-    const fmtU=(label,v)=>v!==null?`
-      <div style="margin-top:6px">
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--color-text-secondary);margin-bottom:2px"><span>${label}</span><span style="color:${colorForPct(Math.round(v))};font-weight:500">${v.toFixed(1)}%</span></div>
-        <div class="mini-progress"><div class="mini-fill" style="width:${Math.round(v)}%;background:${colorForPct(Math.round(v))}"></div></div>
-      </div>`:'';
-    card.innerHTML=`
-      <div class="nivel-header">
-        <span class="nivel-title">${n}</span>
-        <span class="nivel-count">${d.registros} registros</span>
-      </div>
-      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:4px">Sesiones: <strong style="color:${colorForPct(sp)}">${s!==null?s.toFixed(1):'—'} / ${MAX_SESIONES}</strong></div>
-      <div class="mini-progress"><div class="mini-fill" style="width:${sp}%;background:${colorForPct(sp)}"></div></div>
-      ${fmtU('% Logro U1',u1)}
-      ${fmtU('% Logro U2',u2)}
-      ${fmtU('% Logro U3',u3)}
-      ${fmtU('% Logro U4',u4)}
-    `;
-    grid.appendChild(card);
+    const nr=rows.filter(r=>r.nivel===n);
+    byNivel[n]={ses:avg(nr.map(r=>r.sesiones)),...getUnidadData(nr),n:nr.length};
   });
 
-  wrap.appendChild(grid);
-  return wrap;
-}
+  const hNivel=Math.max(160,niveles.length*44+40);
+  const hColegio=Math.max(200,colegiosFiltrados.filter(c=>byColegio[c]).length*40+40);
 
-function initCharts(filtered){
-  setTimeout(()=>{
-    const byN={};
-    filtered.forEach(r=>{
-      if(!r.nivel)return;
-      if(!byN[r.nivel])byN[r.nivel]={sesiones:[],u1:[]};
-      byN[r.nivel].sesiones.push(r.sesiones);
-      const u=r.unidad.replace(/[^0-9]/g,'');
-      if(u==='1')byN[r.nivel].u1.push(r.logro);
-    });
-    const niveles=Object.keys(byN).sort(nivelSort);
-    const sesData=niveles.map(n=>avg(byN[n].sesiones));
-    const u1Data=niveles.map(n=>avg(byN[n].u1));
+  function progBar(val,max,color){
+    const p=val!==null?pct(val,max):0;
+    const c=color||progColor(p);
+    return`<div class="prog-bar"><div class="prog-fill" style="width:${p}%;background:${c}"></div></div>`;
+  }
 
-    const mc=document.getElementById('mainChart');
-    if(!mc)return;
-    if(charts.main)charts.main.destroy();
-    charts.main=new Chart(mc,{
-      type:'bar',
-      data:{
-        labels:niveles,
-        datasets:[
-          {label:'Sesiones realizadas (prom)',data:sesData,backgroundColor:'#378ADD44',borderColor:'#378ADD',borderWidth:1.5,yAxisID:'y'},
-          {label:'% Logro U1',data:u1Data,backgroundColor:'#1D9E7544',borderColor:'#1D9E75',borderWidth:1.5,type:'line',yAxisID:'y2',tension:0.3,pointRadius:4}
-        ]
-      },
-      options:{
-        responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false}},
-        scales:{
-          y:{max:MAX_SESIONES,title:{display:true,text:'Sesiones',font:{size:11}},grid:{color:'rgba(0,0,0,0.05)'}},
-          y2:{position:'right',max:100,title:{display:true,text:'% Logro',font:{size:11}},grid:{display:false}}
-        }
-      }
-    });
-  },100);
+  function unidadCells(d){
+    return['u1','u2','u3','u4'].map(u=>`<td>${pillForPct(d[u])}</td>`).join('');
+  }
+
+  document.getElementById('mainContent').innerHTML=`
+
+    <!-- KPIs -->
+    <div class="section-title">Indicadores generales</div>
+    <div class="kpi-grid">
+      <div class="kpi accent">
+        <div class="lbl">Sesiones promedio</div>
+        <div class="val" style="color:${progColor(sesP)}">${avgSes!==null?avgSes.toFixed(1):'—'}</div>
+        <div class="sub">de ${MAX_SESIONES} sesiones totales</div>
+        ${progBar(avgSes,MAX_SESIONES)}
+        <div class="prog-label"><span>${sesP}% completado</span><span>${MAX_SESIONES} sesiones</span></div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">% Logro U1 (promedio)</div>
+        <div class="val" style="color:${ud.u1!==null?progColor(Math.round(ud.u1)):'var(--text3)'}">${ud.u1!==null?ud.u1.toFixed(1)+'%':'—'}</div>
+        <div class="sub">${ud.n1} registros con datos</div>
+        ${ud.u1!==null?progBar(ud.u1,100):''}
+      </div>
+      <div class="kpi">
+        <div class="lbl">% Logro U2</div>
+        <div class="val" style="color:var(--text3)">${ud.u2!==null?ud.u2.toFixed(1)+'%':'Sin datos aún'}</div>
+        <div class="sub">${ud.n2} registros</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">% Logro U3</div>
+        <div class="val" style="color:var(--text3)">${ud.u3!==null?ud.u3.toFixed(1)+'%':'Sin datos aún'}</div>
+        <div class="sub">${ud.n3} registros</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">% Logro U4</div>
+        <div class="val" style="color:var(--text3)">${ud.u4!==null?ud.u4.toFixed(1)+'%':'Sin datos aún'}</div>
+        <div class="sub">${ud.n4} registros</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Total registros</div>
+        <div class="val">${rows.length}</div>
+        <div class="sub">${colegiosFiltrados.filter(c=>byColegio[c]).length} colegios · ${niveles.length} niveles</div>
+      </div>
+    </div>
+
+    <!-- GRÁFICOS GENERALES -->
+    <div class="charts-row">
+      <div class="card">
+        <h3>Sesiones realizadas por nivel</h3>
+        <div class="legend">
+          <span><span class="sq" style="background:#25AFC4"></span>Realizadas</span>
+          <span><span class="sq" style="background:#e0efec"></span>Pendientes</span>
+        </div>
+        <div style="position:relative;height:${hNivel}px"><canvas id="cSesNivel" role="img" aria-label="Sesiones por nivel"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>% Logro U1 por nivel</h3>
+        <div class="legend">
+          <span><span class="sq" style="background:#93C049"></span>≥75%</span>
+          <span><span class="sq" style="background:#F28E35"></span>50-74%</span>
+          <span><span class="sq" style="background:#D8162D"></span>&lt;50%</span>
+        </div>
+        <div style="position:relative;height:${hNivel}px"><canvas id="cLogroNivel" role="img" aria-label="Logro U1 por nivel"></canvas></div>
+      </div>
+    </div>
+
+    <!-- DETALLE POR NIVEL -->
+    <div class="section-title">Detalle por nivel</div>
+    <div class="nivel-grid">
+      ${niveles.map(n=>{
+        const d=byNivel[n];
+        const sp=d.ses!==null?pct(d.ses,MAX_SESIONES):0;
+        const sc=progColor(sp);
+        return`<div class="nivel-card">
+          <div class="nivel-header">
+            <span class="nivel-name">${n}</span>
+            <span class="nivel-count">${d.n} registros</span>
+          </div>
+          <div style="font-size:12px;color:var(--text2);margin-bottom:3px">Sesiones: <strong>${d.ses!==null?d.ses.toFixed(1):'—'} / ${MAX_SESIONES}</strong></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${sp}%;background:${sc}"></div></div>
+          <div class="prog-label"><span style="color:${sc};font-weight:600">${sp}%</span><span>${MAX_SESIONES} total</span></div>
+          ${d.u1!==null?`<div class="nivel-stat"><span>% Logro U1</span><strong style="color:${progColor(Math.round(d.u1))}">${d.u1.toFixed(1)}%</strong></div>`:''}
+          ${d.u2!==null?`<div class="nivel-stat"><span>% Logro U2</span><strong style="color:${progColor(Math.round(d.u2))}">${d.u2.toFixed(1)}%</strong></div>`:''}
+          ${d.u3!==null?`<div class="nivel-stat"><span>% Logro U3</span><strong style="color:${progColor(Math.round(d.u3))}">${d.u3.toFixed(1)}%</strong></div>`:''}
+          ${d.u4!==null?`<div class="nivel-stat"><span>% Logro U4</span><strong style="color:${progColor(Math.round(d.u4))}">${d.u4.toFixed(1)}%</strong></div>`:''}
+        </div>`;
+      }).join('')}
+    </div>
+
+    <!-- GRÁFICO COMPARATIVO COLEGIOS -->
+    <div class="section-title">Comparativo por colegio</div>
+    <div class="card" style="margin-bottom:20px">
+      <h3>Sesiones realizadas por colegio</h3>
+      <div class="legend">
+        <span><span class="sq" style="background:#25AFC4"></span>Realizadas</span>
+        <span><span class="sq" style="background:#e0efec"></span>Pendientes</span>
+      </div>
+      <div style="position:relative;height:${hColegio}px"><canvas id="cSesColegio" role="img" aria-label="Sesiones por colegio"></canvas></div>
+    </div>
+
+    <!-- TABLA POR COLEGIO -->
+    <div class="section-title">Tabla de avance y logros por colegio</div>
+    <div class="card" style="margin-bottom:20px;overflow-x:auto">
+      <table class="data-table">
+        <thead><tr>
+          <th>Colegio</th>
+          <th>Sesiones prom.</th>
+          <th>Avance</th>
+          <th>% Logro U1</th>
+          <th>% Logro U2</th>
+          <th>% Logro U3</th>
+          <th>% Logro U4</th>
+          <th>Registros</th>
+        </tr></thead>
+        <tbody>
+          ${colegiosFiltrados.filter(c=>byColegio[c]).map(c=>{
+            const d=byColegio[c];
+            const sp=d.ses!==null?pct(d.ses,MAX_SESIONES):0;
+            return`<tr>
+              <td style="font-weight:500">${c}</td>
+              <td>${d.ses!==null?d.ses.toFixed(1)+' / '+MAX_SESIONES:'—'}</td>
+              <td>
+                <div style="display:flex;align-items:center;gap:8px;min-width:100px">
+                  <div style="flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden">
+                    <div style="height:6px;width:${sp}%;background:${progColor(sp)};border-radius:3px"></div>
+                  </div>
+                  <span style="font-size:11px;color:var(--text2);min-width:32px">${sp}%</span>
+                </div>
+              </td>
+              ${unidadCells(d)}
+              <td style="color:var(--text3)">${d.n}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  // Chart: sesiones por nivel
+  const sesNivelData=niveles.map(n=>byNivel[n].ses!==null?parseFloat(byNivel[n].ses.toFixed(1)):0);
+  const pendNivelData=sesNivelData.map(v=>Math.max(0,MAX_SESIONES-v));
+  mkChart('cSesNivel','bar',{
+    labels:niveles,
+    datasets:[
+      {label:'Realizadas',data:sesNivelData,backgroundColor:'#25AFC4',borderRadius:3},
+      {label:'Pendientes',data:pendNivelData,backgroundColor:'#e0efec',borderRadius:3}
+    ]
+  },{
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{x:{stacked:true,max:MAX_SESIONES,ticks:{stepSize:5}},y:{stacked:true,ticks:{font:{size:11}}}}
+  });
+
+  // Chart: logro U1 por nivel
+  const logroNivelData=niveles.map(n=>byNivel[n].u1!==null?parseFloat(byNivel[n].u1.toFixed(1)):null);
+  mkChart('cLogroNivel','bar',{
+    labels:niveles,
+    datasets:[{
+      label:'% Logro U1',
+      data:logroNivelData,
+      backgroundColor:logroNivelData.map(v=>v===null?'#eee':v>=75?'#93C049':v>=50?'#25AFC4':v>=25?'#F28E35':'#D8162D'),
+      borderRadius:3
+    }]
+  },{
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{x:{min:0,max:100,ticks:{callback:v=>v+'%'}},y:{ticks:{font:{size:11}}}}
+  });
+
+  // Chart: sesiones por colegio
+  const colFiltered=colegiosFiltrados.filter(c=>byColegio[c]);
+  const sesCData=colFiltered.map(c=>byColegio[c].ses!==null?parseFloat(byColegio[c].ses.toFixed(1)):0);
+  const pendCData=sesCData.map(v=>Math.max(0,MAX_SESIONES-v));
+  mkChart('cSesColegio','bar',{
+    labels:colFiltered,
+    datasets:[
+      {label:'Realizadas',data:sesCData,backgroundColor:'#25AFC4',borderRadius:3},
+      {label:'Pendientes',data:pendCData,backgroundColor:'#e0efec',borderRadius:3}
+    ]
+  },{
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{x:{stacked:true,max:MAX_SESIONES,ticks:{stepSize:5}},y:{stacked:true,ticks:{font:{size:10}}}}
+  });
 }
 
 loadData();
 </script>
+</body>
+</html>
