@@ -1,0 +1,426 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.header{padding:1.5rem 0 1rem;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1.5rem}
+.header h1{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.header p{font-size:13px;color:var(--color-text-secondary);margin-top:4px}
+.section-title{font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:1rem}
+.filter-section{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1.5rem;border:0.5px solid var(--color-border-tertiary)}
+.filter-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem}
+.filter-header label{font-size:13px;color:var(--color-text-secondary)}
+.filter-controls{display:flex;gap:8px}
+.btn-small{font-size:12px;padding:4px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer}
+.btn-small:hover{background:var(--color-background-secondary)}
+.search-box{width:100%;padding:8px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);font-size:13px;margin-bottom:10px}
+.checkbox-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:4px;max-height:160px;overflow-y:auto;padding-right:4px}
+.checkbox-item{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:var(--border-radius-md);cursor:pointer;font-size:13px;color:var(--color-text-primary)}
+.checkbox-item:hover{background:var(--color-background-primary)}
+.checkbox-item input{accent-color:#185FA5;cursor:pointer}
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:1.5rem}
+.metric-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem}
+.metric-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:6px}
+.metric-value{font-size:26px;font-weight:500;color:var(--color-text-primary)}
+.metric-sub{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.chart-section{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:1.5rem}
+.progress-bar-container{margin:8px 0}
+.progress-bar-label{display:flex;justify-content:space-between;font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
+.progress-bar-track{height:12px;background:var(--color-background-secondary);border-radius:6px;overflow:hidden}
+.progress-bar-fill{height:100%;border-radius:6px;transition:width 0.6s ease}
+.table-section{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:1.5rem;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 12px;font-size:12px;font-weight:500;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary)}
+td{padding:8px 12px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--color-background-secondary)}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500}
+.badge-blue{background:#E6F1FB;color:#185FA5}
+.badge-green{background:#EAF3DE;color:#3B6D11}
+.badge-amber{background:#FAEEDA;color:#854F0B}
+.badge-gray{background:#F1EFE8;color:#5F5E5A}
+.nivel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:1.5rem}
+.nivel-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem}
+.nivel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.nivel-title{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.nivel-count{font-size:11px;color:var(--color-text-tertiary)}
+.mini-progress{height:8px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden;margin:4px 0}
+.mini-fill{height:100%;border-radius:4px}
+.nivel-stats{display:flex;gap:12px;margin-top:8px}
+.nivel-stat{flex:1;font-size:11px;color:var(--color-text-secondary)}
+.nivel-stat strong{display:block;font-size:15px;font-weight:500;color:var(--color-text-primary)}
+.loading{text-align:center;padding:2rem;color:var(--color-text-secondary);font-size:14px}
+.error{text-align:center;padding:2rem;color:var(--color-text-danger);font-size:13px}
+.refresh-btn{font-size:12px;padding:5px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.refresh-btn:hover{background:var(--color-background-secondary)}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#1D9E75;display:inline-block;margin-right:6px}
+.empty{text-align:center;padding:2rem;color:var(--color-text-tertiary);font-size:13px}
+</style>
+
+<h2 class="sr-only">Dashboard de avance y logros por colegio</h2>
+
+<div class="header">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start">
+    <div>
+      <h1>Indicadores de Logro 2026</h1>
+      <p><span class="status-dot" id="statusDot"></span><span id="statusText">Cargando datos...</span></p>
+    </div>
+    <button class="refresh-btn" onclick="loadData()"><i class="ti ti-refresh" aria-hidden="true"></i> Actualizar</button>
+  </div>
+</div>
+
+<div id="mainContent">
+  <div class="loading" id="loadingMsg"><i class="ti ti-loader" aria-hidden="true"></i> Cargando datos desde Google Sheets...</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSc5nR49R8M2WycRNGUIjDN1MP1tRLM_bwCR-I8YmEeMR__FzdM3JpGE0xxrTjxwVvWyu5vL_wfG5VL/pub?gid=1361662823&single=true&output=csv';
+const MAX_SESIONES = 30;
+
+let allData = [];
+let colegios = [];
+let selectedColegios = new Set();
+let charts = {};
+
+const NIVEL_ORDER = ['Medio Menor','Medio Mayor','Pre Kínder','Kínder','1° Básico','2° Básico','3° Básico','4° Básico','5° Básico','6° Básico','7° Básico','8° Básico','1° Medio','2° Medio','3° Medio','4° Medio'];
+
+function nivelSort(a,b){
+  const ia = NIVEL_ORDER.findIndex(n=>n.toLowerCase()===a.toLowerCase());
+  const ib = NIVEL_ORDER.findIndex(n=>n.toLowerCase()===b.toLowerCase());
+  if(ia===-1&&ib===-1)return a.localeCompare(b);
+  if(ia===-1)return 1;
+  if(ib===-1)return -1;
+  return ia-ib;
+}
+
+async function loadData(){
+  document.getElementById('statusText').textContent='Actualizando...';
+  document.getElementById('loadingMsg') && (document.getElementById('loadingMsg').style.display='block');
+  try{
+    const resp = await fetch(SHEET_URL);
+    if(!resp.ok)throw new Error('No se pudo acceder al sheet');
+    const text = await resp.text();
+    allData = parseCSV(text);
+    colegios = [...new Set(allData.map(r=>r.colegio).filter(Boolean))].sort();
+    if(selectedColegios.size===0) colegios.forEach(c=>selectedColegios.add(c));
+    document.getElementById('statusText').textContent=`${allData.length} registros · Actualizado ${new Date().toLocaleTimeString('es-CL')}`;
+    document.getElementById('statusDot').style.background='#1D9E75';
+    render();
+  }catch(e){
+    document.getElementById('statusText').textContent='Error al cargar datos';
+    document.getElementById('statusDot').style.background='#E24B4A';
+    document.getElementById('mainContent').innerHTML=`<div class="error"><i class="ti ti-alert-circle"></i> No se pudieron cargar los datos.<br><small>${e.message}</small></div>`;
+  }
+}
+
+function parseCSV(text){
+  const lines = text.split('\n').filter(l=>l.trim());
+  if(lines.length<2)return[];
+  const headers = parseCSVRow(lines[0]).map(h=>h.trim().toLowerCase());
+  const rows=[];
+  for(let i=1;i<lines.length;i++){
+    const vals=parseCSVRow(lines[i]);
+    const obj={};
+    headers.forEach((h,j)=>{obj[h]=vals[j]?.trim()||''});
+    const colegio=obj['colegio']||obj['nombre colegio']||obj['establecimiento']||'';
+    const nivel=obj['nivel']||obj['curso']||'';
+    const unidad=obj['unidad']||'';
+    const sesiones=parseFloat(obj['sesiones realizadas']||obj['sesiones']||0)||0;
+    const logro=parseFloat((obj['%logro']||obj['% logro']||obj['logro']||'').replace('%','').replace(',','.'))||null;
+    if(colegio)rows.push({colegio,nivel,unidad,sesiones,logro,raw:obj});
+  }
+  return rows;
+}
+
+function parseCSVRow(row){
+  const result=[];let cur='';let inQ=false;
+  for(let i=0;i<row.length;i++){
+    const c=row[i];
+    if(c==='"'){inQ=!inQ}
+    else if(c===','&&!inQ){result.push(cur);cur=''}
+    else{cur+=c}
+  }
+  result.push(cur);
+  return result;
+}
+
+function avg(arr){
+  const valid=arr.filter(v=>v!==null&&!isNaN(v));
+  if(!valid.length)return null;
+  return valid.reduce((a,b)=>a+b,0)/valid.length;
+}
+
+function pct(v,max){return Math.min(100,Math.round((v/max)*100))}
+
+function colorForPct(p){
+  if(p>=75)return'#1D9E75';
+  if(p>=50)return'#378ADD';
+  if(p>=25)return'#BA7517';
+  return'#E24B4A';
+}
+
+function render(){
+  const filtered = allData.filter(r=>selectedColegios.has(r.colegio));
+  const mainContent = document.getElementById('mainContent');
+  mainContent.innerHTML='';
+
+  mainContent.appendChild(buildFilterSection());
+  if(filtered.length===0){
+    const e=document.createElement('div');e.className='empty';
+    e.innerHTML='<i class="ti ti-filter-off" aria-hidden="true"></i><br>Selecciona al menos un colegio para ver datos';
+    mainContent.appendChild(e);return;
+  }
+  mainContent.appendChild(buildSummarySection(filtered));
+  mainContent.appendChild(buildNivelesSection(filtered));
+  initCharts(filtered);
+}
+
+function buildFilterSection(){
+  const div=document.createElement('div');
+  div.className='filter-section';
+  div.innerHTML=`
+    <div class="filter-header">
+      <span class="section-title" style="margin:0">Filtro de colegios <span style="font-size:12px;font-weight:400;color:var(--color-text-tertiary)">(${selectedColegios.size} de ${colegios.length} seleccionados)</span></span>
+      <div class="filter-controls">
+        <button class="btn-small" onclick="selectAll()">Todos</button>
+        <button class="btn-small" onclick="selectNone()">Ninguno</button>
+      </div>
+    </div>
+    <input class="search-box" id="colegioSearch" placeholder="Buscar colegio..." oninput="filterColegios(this.value)">
+    <div class="checkbox-grid" id="checkboxGrid"></div>
+  `;
+  setTimeout(()=>renderCheckboxes(''),0);
+  return div;
+}
+
+function renderCheckboxes(query){
+  const grid=document.getElementById('checkboxGrid');
+  if(!grid)return;
+  const filtered=colegios.filter(c=>c.toLowerCase().includes(query.toLowerCase()));
+  grid.innerHTML=filtered.map(c=>`
+    <label class="checkbox-item">
+      <input type="checkbox" ${selectedColegios.has(c)?'checked':''} onchange="toggleColegio('${c.replace(/'/g,"\\'")}',this.checked)">
+      <span>${c}</span>
+    </label>
+  `).join('');
+}
+
+function filterColegios(q){renderCheckboxes(q)}
+function toggleColegio(c,v){if(v)selectedColegios.add(c);else selectedColegios.delete(c);render();}
+function selectAll(){colegios.forEach(c=>selectedColegios.add(c));render();}
+function selectNone(){selectedColegios.clear();render();}
+
+function buildSummarySection(filtered){
+  const wrap=document.createElement('div');
+
+  const avgSesiones=avg(filtered.map(r=>r.sesiones));
+  const u1=filtered.filter(r=>r.unidad==='1'||r.unidad==='U1'||r.unidad==='Unidad 1'||r.unidad==='1°');
+  const u2=filtered.filter(r=>r.unidad==='2'||r.unidad==='U2'||r.unidad==='Unidad 2'||r.unidad==='2°');
+  const u3=filtered.filter(r=>r.unidad==='3'||r.unidad==='U3'||r.unidad==='Unidad 3'||r.unidad==='3°');
+  const u4=filtered.filter(r=>r.unidad==='4'||r.unidad==='U4'||r.unidad==='Unidad 4'||r.unidad==='4°');
+
+  const avgU1=avg(u1.map(r=>r.logro));
+  const avgU2=avg(u2.map(r=>r.logro));
+  const avgU3=avg(u3.map(r=>r.logro));
+  const avgU4=avg(u4.map(r=>r.logro));
+
+  const sesP=avgSesiones!==null?pct(avgSesiones,MAX_SESIONES):0;
+
+  wrap.innerHTML=`
+    <p class="section-title">Resumen general — colegios seleccionados</p>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Sesiones realizadas (promedio)</div>
+        <div class="metric-value">${avgSesiones!==null?avgSesiones.toFixed(1):'—'}</div>
+        <div class="metric-sub">de ${MAX_SESIONES} sesiones totales</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">% logro U1 (promedio)</div>
+        <div class="metric-value">${avgU1!==null?avgU1.toFixed(1)+'%':'—'}</div>
+        <div class="metric-sub">${u1.length} registros</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">% logro U2</div>
+        <div class="metric-value" style="color:var(--color-text-tertiary)">${avgU2!==null?avgU2.toFixed(1)+'%':'Sin datos'}</div>
+        <div class="metric-sub">${u2.length} registros</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">% logro U3</div>
+        <div class="metric-value" style="color:var(--color-text-tertiary)">${avgU3!==null?avgU3.toFixed(1)+'%':'Sin datos'}</div>
+        <div class="metric-sub">${u3.length} registros</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">% logro U4</div>
+        <div class="metric-value" style="color:var(--color-text-tertiary)">${avgU4!==null?avgU4.toFixed(1)+'%':'Sin datos'}</div>
+        <div class="metric-sub">${u4.length} registros</div>
+      </div>
+    </div>
+
+    <div class="chart-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <span style="font-size:14px;font-weight:500;color:var(--color-text-primary)">Avance de sesiones y logros por unidad</span>
+        <div style="display:flex;gap:12px;font-size:11px;color:var(--color-text-secondary)">
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#378ADD;margin-right:4px"></span>Sesiones</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:4px"></span>% Logro</span>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1rem">
+        <div class="progress-bar-container">
+          <div class="progress-bar-label"><span>Sesiones realizadas</span><span>${avgSesiones!==null?avgSesiones.toFixed(1):0} / ${MAX_SESIONES} (${sesP}%)</span></div>
+          <div class="progress-bar-track"><div class="progress-bar-fill" style="width:${sesP}%;background:${colorForPct(sesP)}"></div></div>
+        </div>
+        ${avgU1!==null?`
+        <div class="progress-bar-container">
+          <div class="progress-bar-label"><span>% Logro Unidad 1</span><span>${avgU1.toFixed(1)}%</span></div>
+          <div class="progress-bar-track"><div class="progress-bar-fill" style="width:${Math.round(avgU1)}%;background:${colorForPct(Math.round(avgU1))}"></div></div>
+        </div>`:''}
+        ${avgU2!==null?`
+        <div class="progress-bar-container">
+          <div class="progress-bar-label"><span>% Logro Unidad 2</span><span>${avgU2.toFixed(1)}%</span></div>
+          <div class="progress-bar-track"><div class="progress-bar-fill" style="width:${Math.round(avgU2)}%;background:${colorForPct(Math.round(avgU2))}"></div></div>
+        </div>`:''}
+        ${avgU3!==null?`
+        <div class="progress-bar-container">
+          <div class="progress-bar-label"><span>% Logro Unidad 3</span><span>${avgU3.toFixed(1)}%</span></div>
+          <div class="progress-bar-track"><div class="progress-bar-fill" style="width:${Math.round(avgU3)}%;background:${colorForPct(Math.round(avgU3))}"></div></div>
+        </div>`:''}
+        ${avgU4!==null?`
+        <div class="progress-bar-container">
+          <div class="progress-bar-label"><span>% Logro Unidad 4</span><span>${avgU4.toFixed(1)}%</span></div>
+          <div class="progress-bar-track"><div class="progress-bar-fill" style="width:${Math.round(avgU4)}%;background:${colorForPct(Math.round(avgU4))}"></div></div>
+        </div>`:''}
+      </div>
+
+      <div style="position:relative;width:100%;height:280px">
+        <canvas id="mainChart" role="img" aria-label="Gráfico de sesiones realizadas versus total, y porcentaje de logro por unidad"></canvas>
+      </div>
+    </div>
+
+    <div class="table-section">
+      <p class="section-title">Detalle por colegio</p>
+      ${buildColegioTable(filtered)}
+    </div>
+  `;
+  return wrap;
+}
+
+function buildColegioTable(filtered){
+  const byC={};
+  filtered.forEach(r=>{
+    if(!byC[r.colegio])byC[r.colegio]={sesiones:[],u1:[],u2:[],u3:[],u4:[]};
+    byC[r.colegio].sesiones.push(r.sesiones);
+    const u=r.unidad.replace(/[^0-9]/g,'');
+    if(u==='1')byC[r.colegio].u1.push(r.logro);
+    if(u==='2')byC[r.colegio].u2.push(r.logro);
+    if(u==='3')byC[r.colegio].u3.push(r.logro);
+    if(u==='4')byC[r.colegio].u4.push(r.logro);
+  });
+  const rows=Object.entries(byC).map(([c,d])=>{
+    const s=avg(d.sesiones);const sp=s!==null?pct(s,MAX_SESIONES):0;
+    const u1=avg(d.u1);const u2=avg(d.u2);const u3=avg(d.u3);const u4=avg(d.u4);
+    return{colegio:c,s,sp,u1,u2,u3,u4};
+  }).sort((a,b)=>a.colegio.localeCompare(b.colegio));
+
+  const fmtPct=(v)=>v!==null?`<span class="badge" style="background:${colorForPct(Math.round(v))}22;color:${colorForPct(Math.round(v))}">${v.toFixed(1)}%</span>`:'<span style="color:var(--color-text-tertiary)">—</span>';
+  return`<table><thead><tr>
+    <th>Colegio</th><th>Sesiones (prom.)</th><th>Avance</th><th>% Logro U1</th><th>% Logro U2</th><th>% Logro U3</th><th>% Logro U4</th>
+  </tr></thead><tbody>${rows.map(r=>`<tr>
+    <td style="font-weight:500">${r.colegio}</td>
+    <td>${r.s!==null?r.s.toFixed(1):'—'} / ${MAX_SESIONES}</td>
+    <td><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:8px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden"><div style="height:100%;width:${r.sp}%;background:${colorForPct(r.sp)};border-radius:4px"></div></div><span style="font-size:12px;color:var(--color-text-secondary);min-width:30px">${r.sp}%</span></div></td>
+    <td>${fmtPct(r.u1)}</td><td>${fmtPct(r.u2)}</td><td>${fmtPct(r.u3)}</td><td>${fmtPct(r.u4)}</td>
+  </tr>`).join('')}</tbody></table>`;
+}
+
+function buildNivelesSection(filtered){
+  const wrap=document.createElement('div');
+  wrap.innerHTML='<p class="section-title">Detalle por nivel</p>';
+
+  const byN={};
+  filtered.forEach(r=>{
+    if(!r.nivel)return;
+    if(!byN[r.nivel])byN[r.nivel]={sesiones:[],u1:[],u2:[],u3:[],u4:[],registros:0};
+    byN[r.nivel].sesiones.push(r.sesiones);
+    byN[r.nivel].registros++;
+    const u=r.unidad.replace(/[^0-9]/g,'');
+    if(u==='1')byN[r.nivel].u1.push(r.logro);
+    if(u==='2')byN[r.nivel].u2.push(r.logro);
+    if(u==='3')byN[r.nivel].u3.push(r.logro);
+    if(u==='4')byN[r.nivel].u4.push(r.logro);
+  });
+
+  const niveles=Object.keys(byN).sort(nivelSort);
+  const grid=document.createElement('div');
+  grid.className='nivel-grid';
+
+  niveles.forEach(n=>{
+    const d=byN[n];
+    const s=avg(d.sesiones);const sp=s!==null?pct(s,MAX_SESIONES):0;
+    const u1=avg(d.u1);const u2=avg(d.u2);const u3=avg(d.u3);const u4=avg(d.u4);
+    const card=document.createElement('div');
+    card.className='nivel-card';
+    const fmtU=(label,v)=>v!==null?`
+      <div style="margin-top:6px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--color-text-secondary);margin-bottom:2px"><span>${label}</span><span style="color:${colorForPct(Math.round(v))};font-weight:500">${v.toFixed(1)}%</span></div>
+        <div class="mini-progress"><div class="mini-fill" style="width:${Math.round(v)}%;background:${colorForPct(Math.round(v))}"></div></div>
+      </div>`:'';
+    card.innerHTML=`
+      <div class="nivel-header">
+        <span class="nivel-title">${n}</span>
+        <span class="nivel-count">${d.registros} registros</span>
+      </div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:4px">Sesiones: <strong style="color:${colorForPct(sp)}">${s!==null?s.toFixed(1):'—'} / ${MAX_SESIONES}</strong></div>
+      <div class="mini-progress"><div class="mini-fill" style="width:${sp}%;background:${colorForPct(sp)}"></div></div>
+      ${fmtU('% Logro U1',u1)}
+      ${fmtU('% Logro U2',u2)}
+      ${fmtU('% Logro U3',u3)}
+      ${fmtU('% Logro U4',u4)}
+    `;
+    grid.appendChild(card);
+  });
+
+  wrap.appendChild(grid);
+  return wrap;
+}
+
+function initCharts(filtered){
+  setTimeout(()=>{
+    const byN={};
+    filtered.forEach(r=>{
+      if(!r.nivel)return;
+      if(!byN[r.nivel])byN[r.nivel]={sesiones:[],u1:[]};
+      byN[r.nivel].sesiones.push(r.sesiones);
+      const u=r.unidad.replace(/[^0-9]/g,'');
+      if(u==='1')byN[r.nivel].u1.push(r.logro);
+    });
+    const niveles=Object.keys(byN).sort(nivelSort);
+    const sesData=niveles.map(n=>avg(byN[n].sesiones));
+    const u1Data=niveles.map(n=>avg(byN[n].u1));
+
+    const mc=document.getElementById('mainChart');
+    if(!mc)return;
+    if(charts.main)charts.main.destroy();
+    charts.main=new Chart(mc,{
+      type:'bar',
+      data:{
+        labels:niveles,
+        datasets:[
+          {label:'Sesiones realizadas (prom)',data:sesData,backgroundColor:'#378ADD44',borderColor:'#378ADD',borderWidth:1.5,yAxisID:'y'},
+          {label:'% Logro U1',data:u1Data,backgroundColor:'#1D9E7544',borderColor:'#1D9E75',borderWidth:1.5,type:'line',yAxisID:'y2',tension:0.3,pointRadius:4}
+        ]
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false}},
+        scales:{
+          y:{max:MAX_SESIONES,title:{display:true,text:'Sesiones',font:{size:11}},grid:{color:'rgba(0,0,0,0.05)'}},
+          y2:{position:'right',max:100,title:{display:true,text:'% Logro',font:{size:11}},grid:{display:false}}
+        }
+      }
+    });
+  },100);
+}
+
+loadData();
+</script>
