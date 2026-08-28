@@ -228,11 +228,14 @@ function getStats(rows){
     const u=normU(r.unidad);
     if(ses[u]!==undefined){ ses[u].push(r.sesiones); if(r.logro!==null)log[u].push(r.logro); }
   });
+  const sesU1=avg(ses.U1), sesU2=avg(ses.U2), sesU3=avg(ses.U3), sesU4=avg(ses.U4);
+  // Avance total = suma de los promedios de sesiones de cada unidad (no el promedio mezclado de todas las filas)
+  const totalSes = (sesU1||0) + (sesU2||0) + (sesU3||0) + (sesU4||0);
   return{
-    sesU1:avg(ses.U1), sesU2:avg(ses.U2), sesU3:avg(ses.U3), sesU4:avg(ses.U4),
+    sesU1, sesU2, sesU3, sesU4,
     logU1:avg(log.U1), logU2:avg(log.U2), logU3:avg(log.U3), logU4:avg(log.U4),
     nLog:{U1:log.U1.length,U2:log.U2.length,U3:log.U3.length,U4:log.U4.length},
-    totalSes: avg(rows.map(r=>r.sesiones)), // promedio global de sesiones (todas las unidades)
+    totalSes: totalSes>0?totalSes:null,
     n:rows.length
   };
 }
