@@ -106,7 +106,35 @@
   .charts-2col { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px; }
   @media(max-width:640px){.charts-2col{grid-template-columns:1fr}}
   .logro-charts { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin-bottom:20px; }
+
+  /* ── IMPRESIÓN / PDF ── */
+  .print-title { display:none; }
+  @media print {
+    body { background:#fff; font-size:11px; }
+    .wrap { max-width:100%; padding:0 12px; }
+    .filters, .btn, .no-print { display:none !important; }
+    .print-title { display:block; text-align:center; margin-bottom:14px; padding-bottom:10px; border-bottom:2px solid #25AFC4; }
+    .print-title h1 { font-size:20px; color:#25AFC4; margin-bottom:2px; }
+    .print-title .sub { font-size:11px; color:#666; }
+    .top-bar { border-bottom:1px solid #ccc; padding-bottom:8px; }
+    .card, .kpi, .nivel-card { border:0.5px solid #ccc !important; box-shadow:none !important; break-inside:avoid; }
+    .nivel-grid { grid-template-columns:repeat(3,1fr); }
+    .kpi-grid { grid-template-columns:repeat(3,1fr); }
+    .charts-2col, .logro-charts { grid-template-columns:1fr 1fr; }
+    .section-title { break-after:avoid; margin-top:14px; }
+    .card canvas { max-height:260px !important; }
+    table.tbl { font-size:9px; }
+    .tbl th, .tbl td { padding:4px 5px; }
+    a[href]:after { content:""; }
+    .semaforo-legend { break-inside:avoid; }
+    .section-title, .card, .kpi-grid, .nivel-grid { break-inside:avoid-page; }
+  }
 </style>
+<script>
+function printDashboard(){
+  window.print();
+}
+</script>
 </head>
 <body>
 <div class="wrap">
@@ -115,7 +143,15 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 17V11M12 17V7M16 17V13"/></svg>
       Avance y OL — PASOS UANDES
     </h1>
-    <span class="update-time" id="updateTime">—</span>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="update-time" id="updateTime">—</span>
+      <button class="btn no-print" onclick="printDashboard()" title="Genera un PDF con el estado actual del dashboard">🖨️ Imprimir / PDF</button>
+    </div>
+  </div>
+
+  <div class="print-title">
+    <h1>Avance y OL — PASOS UANDES</h1>
+    <div class="sub" id="printSub">—</div>
   </div>
 
   <div class="filters">
@@ -341,6 +377,14 @@ function render(){
   const sel=getSelected();
   const colegios=(sel.length===0?colegiosAll:sel.slice().sort());
   const niveles=[...new Set(rows.map(r=>r.nivel).filter(Boolean))].sort(nivelSort);
+
+  // Subtítulo para versión impresa: filtro activo + fecha de generación
+  const nivelFiltro=document.getElementById('fNivel').value;
+  const colegioTxt=sel.length===0?'Todos los colegios':(sel.length===1?sel[0]:sel.length+' colegios seleccionados');
+  const nivelTxt=nivelFiltro?nivelFiltro:'Todos los niveles';
+  const fechaTxt=new Date().toLocaleDateString('es-CL',{day:'2-digit',month:'long',year:'numeric'});
+  const printSubEl=document.getElementById('printSub');
+  if(printSubEl) printSubEl.textContent=`${colegioTxt} · ${nivelTxt} · Generado el ${fechaTxt}`;
 
   // Stats globales
   const gs=getStats(rows);
