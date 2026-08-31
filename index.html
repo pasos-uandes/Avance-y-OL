@@ -180,6 +180,39 @@ const NIVEL_ORDER = [
 function normStr(s){ return (s||'').toLowerCase().replace(/[íì]/g,'i').replace(/[áà]/g,'a').replace(/[éè]/g,'e').replace(/[óò]/g,'o').replace(/[úù]/g,'u').replace(/°|º/g,'').trim(); }
 function nivelSort(a,b){ const ia=NIVEL_ORDER.findIndex(n=>normStr(n)===normStr(a)), ib=NIVEL_ORDER.findIndex(n=>normStr(n)===normStr(b)); if(ia===-1&&ib===-1)return a.localeCompare(b,'es'); if(ia===-1)return 1; if(ib===-1)return -1; return ia-ib; }
 
+// Nombres canónicos "bonitos" para agrupar niveles sin importar cómo vengan escritos en el sheet
+// (mayúsculas/minúsculas, con o sin tilde, con ° o º, etc. deben unificarse en UNA sola tarjeta)
+const CANONICAL_NIVELES = [
+  'Medio Menor','Medio Mayor','Playgroup','Pre Kínder','Kínder',
+  '1° Básico','2° Básico','3° Básico','4° Básico','5° Básico','6° Básico','7° Básico','8° Básico',
+  '1° Medio','2° Medio','3° Medio','4° Medio'
+];
+const CANONICAL_MAP = {};
+CANONICAL_NIVELES.forEach(n => { CANONICAL_MAP[normStr(n)] = n; });
+// Variantes adicionales que no se resuelven solo con normStr (Basico sin ° al inicio, escritas con palabras)
+const EXTRA_VARIANTS = {
+  'primero basico':'1° Básico','segundo basico':'2° Básico','tercero basico':'3° Básico','cuarto basico':'4° Básico',
+  'quinto basico':'5° Básico','sexto basico':'6° Básico','septimo basico':'7° Básico','octavo basico':'8° Básico',
+  'primero medio':'1° Medio','segundo medio':'2° Medio','tercero medio':'3° Medio','cuarto medio':'4° Medio',
+  'prekinder':'Pre Kínder','pre kinder':'Pre Kínder','pre-kinder':'Pre Kínder',
+  'kinder':'Kínder','kindergarten':'Kínder'
+};
+Object.keys(EXTRA_VARIANTS).forEach(k => { if(!CANONICAL_MAP[k]) CANONICAL_MAP[k]=EXTRA_VARIANTS[k]; });
+
+// Cache de niveles ya vistos que no calzan con la lista conocida — asegura que la MISMA
+// variante de escritura (normalizada) siempre se mapee al mismo nombre visible, sin duplicar tarjetas.
+const seenNivelDisplay = {};
+function canonNivel(raw){
+  if(!raw) return '';
+  const key = normStr(raw);
+  if(CANONICAL_MAP[key]) return CANONICAL_MAP[key];
+  if(seenNivelDisplay[key]) return seenNivelDisplay[key];
+  // Nivel desconocido: usar el texto tal como vino la primera vez, con formato Título
+  const display = raw.trim().replace(/\w\S*/g, t => t.charAt(0).toUpperCase()+t.slice(1).toLowerCase());
+  seenNivelDisplay[key] = display;
+  return display;
+}
+
 function parseCSV(text){
   const lines=text.trim().split('\n').filter(l=>l.trim());
   if(lines.length<2)return[];
@@ -189,13 +222,14 @@ function parseCSV(text){
     const vals=parseRow(lines[i]);
     const o={};headers.forEach((h,j)=>o[h]=(vals[j]||'').trim());
     const colegio=o['colegio']||o['nombre colegio']||o['establecimiento']||'';
-    const nivel=o['nivel']||o['curso']||'';
+    const nivelRaw=o['nivel']||o['curso']||'';
+    const nivel=canonNivel(nivelRaw);
     const unidad=o['unidad']||'';
     const sesiones=parseFloat((o['sesiones realizadas']||o['sesiones']||'0').replace(',','.'))||0;
     const raw=(o['%logro']||o['% logro']||o['%_logro']||o['logro']||'').replace('%','').replace(',','.').trim();
     // Solo aceptar valores numéricos como logro; ignorar "no observado", texto, etc.
     const logro=(raw===''||isNaN(parseFloat(raw)))?null:parseFloat(raw);
-    if(colegio)rows.push({colegio:colegio.trim(),nivel:nivel.trim(),unidad:unidad.trim(),sesiones,logro});
+    if(colegio)rows.push({colegio:colegio.trim(),nivel,unidad:unidad.trim(),sesiones,logro});
   }
   return rows;
 }
